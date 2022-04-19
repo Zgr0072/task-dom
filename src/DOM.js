@@ -5,6 +5,9 @@
   Считаем, что всегда передается тег, допускающий вставку текста в качестве своего содержимого (P, DIV, I и пр.).
 */
 export function appendToBody(tag, content, count) {
+    for (let i = 0; i < count; i++) {
+        document.body.innerHTML += '<' + tag + '>' + content + '</' + tag + '>';
+    }
 }
 
 /*
@@ -15,6 +18,21 @@ export function appendToBody(tag, content, count) {
   Сформированное дерево верните в качестве результата работы функции.
 */
 export function generateTree(childrenCount, level) {
+    function addChildren(parent, count, curLvl) {
+        let res = [];
+        for (let i = 0; i < count; i++) {
+            let child = document.createElement('div');
+            child.setAttribute('class', 'item_' + curLvl);
+            parent.appendChild(child);
+            if (curLvl < level) {
+                addChildren(child, count, curLvl + 1);
+            }
+        }
+    }
+    let root = document.createElement('div');
+    root.setAttribute('class', 'item_1');
+    addChildren(root, childrenCount, 2);
+    return root;
 }
 
 /*
@@ -25,5 +43,16 @@ export function generateTree(childrenCount, level) {
   которые находились внутри переписанных тегов.
   Сформированное дерево верните в качестве результата работы функции.
 */
+
 export function replaceNodes() {
+    let root = generateTree(2, 3);
+    let childrenColl = root.getElementsByClassName('item_2');
+    for (let i = childrenColl.length - 1; i >= 0; i--) {
+        let sect = document.createElement('section');
+        sect.setAttribute('class', 'item_2');
+        sect.innerHTML = childrenColl[i].innerHTML;
+        root.appendChild(sect);
+        root.removeChild(childrenColl[i]);
+    }
+    return root;
 }
